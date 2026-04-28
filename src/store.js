@@ -3,6 +3,16 @@ const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
 
+let vercelBlob = null;
+async function getVercelBlob() {
+  if (!process.env.VERCEL) return null;
+  if (vercelBlob) return vercelBlob;
+  // Lazy-load so local dev doesn't require env vars / SDK behavior.
+  // eslint-disable-next-line global-require
+  vercelBlob = require('@vercel/blob');
+  return vercelBlob;
+}
+
 /** Local dev: ./storage — Vercel: writable OS temp dir (instances are ephemeral). */
 const STORAGE_DIR = (() => {
   if (process.env.STORAGE_PATH && process.env.STORAGE_PATH.trim()) {
@@ -15,6 +25,9 @@ const STORAGE_DIR = (() => {
 })();
 const PDF_DIR = path.join(STORAGE_DIR, 'pdfs');
 const INDEX_PATH = path.join(STORAGE_DIR, 'index.json');
+
+const BLOB_PREFIX = 'pdfs/';
+const BLOB_META_PREFIX = 'meta/';
 
 async function ensureDirs() {
   await fs.mkdir(PDF_DIR, { recursive: true });
@@ -58,6 +71,27 @@ function assertValidPdfBuffer(bytes) {
 }
 
 async function listPdfs() {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { list } = blob;
+    const out = await list({ prefix: BLOB_META_PREFIX });
+    const items = [];
+    for (const b of out.blobs ?? []) {
+      try {
+        const res = await fetch(b.url);
+        if (!res.ok) continue;
+        const meta = await res.json();
+        if (meta && typeof meta.id === 'string') items.push(meta);
+      } catch {
+        // ignore broken metadata
+      }
+    }
+    return items
+      .slice()
+      .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
+      .map(({ id, name, size, createdAt, updatedAt }) => ({ id, name, size, createdAt, updatedAt }));
+  }
+
   const { items } = await readIndex();
   return items
     .slice()
@@ -66,11 +100,38 @@ async function listPdfs() {
 }
 
 async function getMeta(id) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { head } = blob;
+    try {
+      const h = await head(`${BLOB_META_PREFIX}${id}.json`);
+      const res = await fetch(h.url);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  }
+
   const { items } = await readIndex();
   return items.find((it) => it.id === id) ?? null;
 }
 
 async function getBytes(id) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { head } = blob;
+    const h = await head(`${BLOB_PREFIX}${id}.pdf`);
+    const res = await fetch(h.url);
+    if (!res.ok) {
+      const err = new Error('Not found.');
+      err.code = 'ENOENT';
+      throw err;
+    }
+    const ab = await res.arrayBuffer();
+    return Buffer.from(ab);
+  }
+
   return await fs.readFile(pdfPath(id));
 }
 
@@ -87,6 +148,24 @@ async function putNew({ name, bytes }) {
     updatedAt: now
   };
 
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { put } = blob;
+    // Store PDF
+    await put(`${BLOB_PREFIX}${id}.pdf`, buf, {
+      access: 'public',
+      contentType: 'application/pdf',
+      addRandomSuffix: false
+    });
+    // Store metadata json
+    await put(`${BLOB_META_PREFIX}${id}.json`, JSON.stringify(meta), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false
+    });
+    return meta;
+  }
+
   await ensureDirs();
   await fs.writeFile(pdfPath(id), buf);
 
@@ -97,12 +176,32 @@ async function putNew({ name, bytes }) {
 }
 
 async function updateBytes(id, bytes) {
+  const buf = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes);
+  assertValidPdfBuffer(buf);
+
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { put } = blob;
+    const meta = await getMeta(id);
+    if (!meta) return null;
+    meta.size = buf.byteLength;
+    meta.updatedAt = Date.now();
+    await put(`${BLOB_PREFIX}${id}.pdf`, buf, {
+      access: 'public',
+      contentType: 'application/pdf',
+      addRandomSuffix: false
+    });
+    await put(`${BLOB_META_PREFIX}${id}.json`, JSON.stringify(meta), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false
+    });
+    return meta;
+  }
+
   const index = await readIndex();
   const it = index.items.find((x) => x.id === id);
   if (!it) return null;
-
-  const buf = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes);
-  assertValidPdfBuffer(buf);
   await fs.writeFile(pdfPath(id), buf);
   it.size = buf.byteLength;
   it.updatedAt = Date.now();
@@ -111,6 +210,15 @@ async function updateBytes(id, bytes) {
 }
 
 async function deletePdf(id) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { del } = blob;
+    const meta = await getMeta(id);
+    if (!meta) return false;
+    await Promise.allSettled([del(`${BLOB_PREFIX}${id}.pdf`), del(`${BLOB_META_PREFIX}${id}.json`)]);
+    return true;
+  }
+
   const index = await readIndex();
   const nextItems = index.items.filter((x) => x.id !== id);
   if (nextItems.length === index.items.length) return false;
