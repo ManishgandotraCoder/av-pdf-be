@@ -6,6 +6,9 @@ const crypto = require('node:crypto');
 let vercelBlob = null;
 async function getVercelBlob() {
   if (!process.env.VERCEL) return null;
+  // If the token isn't configured, don't attempt to use the SDK.
+  // (Otherwise @vercel/blob throws "No token found".)
+  if (!process.env.BLOB_READ_WRITE_TOKEN || !process.env.BLOB_READ_WRITE_TOKEN.trim()) return null;
   if (vercelBlob) return vercelBlob;
   // Lazy-load so local dev doesn't require env vars / SDK behavior.
   // eslint-disable-next-line global-require
