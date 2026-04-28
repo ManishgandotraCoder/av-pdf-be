@@ -1,8 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
+const crypto = require('node:crypto');
 
-const store = require('./store');
+const { getMongoUri } = require('./mongo');
+const usingMongo = Boolean(getMongoUri());
+const store = usingMongo ? require('./store-mongo') : require('./store');
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -54,7 +57,9 @@ app.post('/api/pdfs', upload.single('file'), async (req, res) => {
   }
 
   try {
-    const meta = await store.putNew({ name: file.originalname, bytes: file.buffer });
+    const meta = usingMongo
+      ? await store.putNew({ id: crypto.randomUUID(), name: file.originalname, bytes: file.buffer })
+      : await store.putNew({ name: file.originalname, bytes: file.buffer });
     res.json(meta);
   } catch (e) {
     res.status(400).json({ error: e instanceof Error ? e.message : 'Upload failed.' });
