@@ -235,12 +235,135 @@ async function deletePdf(id) {
   return true;
 }
 
+async function getFurniture(id) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const meta = await getMeta(id);
+    if (!meta) return null;
+    return meta.pageFurniture ?? null;
+  }
+
+  const { items } = await readIndex();
+  const it = items.find((x) => x.id === id);
+  if (!it) return null;
+  return it.pageFurniture ?? null;
+}
+
+async function setFurniture(id, pageFurniture) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { put } = blob;
+    const meta = await getMeta(id);
+    if (!meta) return null;
+    meta.pageFurniture = pageFurniture ?? null;
+    meta.updatedAt = Date.now();
+    await put(`${BLOB_META_PREFIX}${id}.json`, JSON.stringify(meta), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false
+    });
+    return meta.pageFurniture;
+  }
+
+  const index = await readIndex();
+  const it = index.items.find((x) => x.id === id);
+  if (!it) return null;
+  it.pageFurniture = pageFurniture ?? null;
+  it.updatedAt = Date.now();
+  await writeIndex(index);
+  return it.pageFurniture;
+}
+
+async function getRejection(id) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const meta = await getMeta(id);
+    if (!meta) return null;
+    return meta.rejection ?? null;
+  }
+
+  const { items } = await readIndex();
+  const it = items.find((x) => x.id === id);
+  if (!it) return null;
+  return it.rejection ?? null;
+}
+
+async function setRejection(id, rejection) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { put } = blob;
+    const meta = await getMeta(id);
+    if (!meta) return null;
+    meta.rejection = rejection ?? null;
+    meta.updatedAt = Date.now();
+    await put(`${BLOB_META_PREFIX}${id}.json`, JSON.stringify(meta), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false
+    });
+    return meta.rejection;
+  }
+
+  const index = await readIndex();
+  const it = index.items.find((x) => x.id === id);
+  if (!it) return null;
+  it.rejection = rejection ?? null;
+  it.updatedAt = Date.now();
+  await writeIndex(index);
+  return it.rejection;
+}
+
+async function getShare(id) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const meta = await getMeta(id);
+    if (!meta) return null;
+    return meta.share ?? null;
+  }
+
+  const { items } = await readIndex();
+  const it = items.find((x) => x.id === id);
+  if (!it) return null;
+  return it.share ?? null;
+}
+
+async function setShare(id, share) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { put } = blob;
+    const meta = await getMeta(id);
+    if (!meta) return null;
+    meta.share = share ?? null;
+    meta.updatedAt = Date.now();
+    await put(`${BLOB_META_PREFIX}${id}.json`, JSON.stringify(meta), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false
+    });
+    return meta.share;
+  }
+
+  const index = await readIndex();
+  const it = index.items.find((x) => x.id === id);
+  if (!it) return null;
+  it.share = share ?? null;
+  it.updatedAt = Date.now();
+  await writeIndex(index);
+  return it.share;
+}
+
 module.exports = {
   listPdfs,
   getMeta,
   getBytes,
   putNew,
   updateBytes,
-  deletePdf
+  deletePdf,
+  getFurniture,
+  setFurniture,
+  getRejection,
+  setRejection,
+  getShare,
+  setShare
 };
 

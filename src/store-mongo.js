@@ -25,7 +25,7 @@ async function metaCollection() {
 async function listPdfs() {
   const col = await metaCollection();
   const items = await col
-    .find({}, { projection: { _id: 0, fileId: 0 } })
+    .find({}, { projection: { _id: 0, fileId: 0, share: 0 } })
     .sort({ updatedAt: -1 })
     .toArray();
   return items;
@@ -152,12 +152,87 @@ async function deletePdf(id) {
   return true;
 }
 
+async function getFurniture(id) {
+  const col = await metaCollection();
+  const doc = await col.findOne({ id }, { projection: { _id: 0, pageFurniture: 1 } });
+  if (!doc) return null;
+  return doc.pageFurniture ?? null;
+}
+
+async function setFurniture(id, pageFurniture) {
+  const col = await metaCollection();
+  const existing = await col.findOne({ id }, { projection: { _id: 1 } });
+  if (!existing) return null;
+  await col.updateOne(
+    { id },
+    {
+      $set: {
+        pageFurniture: pageFurniture ?? null,
+        updatedAt: Date.now()
+      }
+    }
+  );
+  return pageFurniture ?? null;
+}
+
+async function getRejection(id) {
+  const col = await metaCollection();
+  const doc = await col.findOne({ id }, { projection: { _id: 0, rejection: 1 } });
+  if (!doc) return null;
+  return doc.rejection ?? null;
+}
+
+async function setRejection(id, rejection) {
+  const col = await metaCollection();
+  const existing = await col.findOne({ id }, { projection: { _id: 1 } });
+  if (!existing) return null;
+  await col.updateOne(
+    { id },
+    {
+      $set: {
+        rejection: rejection ?? null,
+        updatedAt: Date.now()
+      }
+    }
+  );
+  return rejection ?? null;
+}
+
+async function getShare(id) {
+  const col = await metaCollection();
+  const doc = await col.findOne({ id }, { projection: { _id: 0, share: 1 } });
+  if (!doc) return null;
+  return doc.share ?? null;
+}
+
+async function setShare(id, share) {
+  const col = await metaCollection();
+  const existing = await col.findOne({ id }, { projection: { _id: 1 } });
+  if (!existing) return null;
+  await col.updateOne(
+    { id },
+    {
+      $set: {
+        share: share ?? null,
+        updatedAt: Date.now()
+      }
+    }
+  );
+  return share ?? null;
+}
+
 module.exports = {
   listPdfs,
   getMeta,
   getBytes,
   putNew,
   updateBytes,
-  deletePdf
+  deletePdf,
+  getFurniture,
+  setFurniture,
+  getRejection,
+  setRejection,
+  getShare,
+  setShare
 };
 
