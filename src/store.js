@@ -65,12 +65,47 @@ function pdfPath(id) {
   return path.join(PDF_DIR, `${id}.pdf`);
 }
 
+/** Root id for a version chain (walks parentId when rootId is missing). */
+function getRootIdOfItem(item, byId) {
+  if (!item) return '';
+  if (item.rootId) return item.rootId;
+  let cur = item;
+  const seen = new Set();
+  while (cur && !seen.has(cur.id)) {
+    seen.add(cur.id);
+    if (!cur.parentId) return cur.id;
+    cur = byId.get(cur.parentId);
+  }
+  return item.id;
+}
+
+async function resolveRootIdFromSource(sourceId) {
+  const m = await getMeta(sourceId);
+  if (!m) return sourceId;
+  if (m.rootId) return m.rootId;
+  if (m.parentId) return resolveRootIdFromSource(m.parentId);
+  return m.id;
+}
+
 function assertValidPdfBuffer(bytes) {
   if (!Buffer.isBuffer(bytes)) throw new Error('Invalid buffer.');
   if (bytes.length < 5) throw new Error('Empty PDF (too small).');
   if (bytes.toString('ascii', 0, 5) !== '%PDF-') {
     throw new Error('Not a valid PDF (missing %PDF- header).');
   }
+}
+
+function normalizeListRow(it) {
+  const o = {
+    id: it.id,
+    name: it.name,
+    size: it.size,
+    createdAt: it.createdAt,
+    updatedAt: it.updatedAt
+  };
+  if (it.parentId) o.parentId = it.parentId;
+  if (it.rootId && it.rootId !== it.id) o.rootId = it.rootId;
+  return o;
 }
 
 async function listPdfs() {
@@ -92,14 +127,14 @@ async function listPdfs() {
     return items
       .slice()
       .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
-      .map(({ id, name, size, createdAt, updatedAt }) => ({ id, name, size, createdAt, updatedAt }));
+      .map(normalizeListRow);
   }
 
   const { items } = await readIndex();
   return items
     .slice()
     .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
-    .map(({ id, name, size, createdAt, updatedAt }) => ({ id, name, size, createdAt, updatedAt }));
+    .map(normalizeListRow);
 }
 
 async function getMeta(id) {
@@ -138,17 +173,26 @@ async function getBytes(id) {
   return await fs.readFile(pdfPath(id));
 }
 
-async function putNew({ name, bytes }) {
+async function putNew({ name, bytes, parentProposalId }) {
   const id = newId();
   const now = Date.now();
   const buf = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes);
   assertValidPdfBuffer(buf);
+  let parentId;
+  let rootId = id;
+  const src = typeof parentProposalId === 'string' && parentProposalId.trim() ? parentProposalId.trim() : '';
+  if (src) {
+    parentId = src;
+    rootId = await resolveRootIdFromSource(src);
+  }
   const meta = {
     id,
     name: String(name ?? 'document.pdf'),
     size: buf.byteLength,
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
+    rootId,
+    ...(parentId ? { parentId } : {})
   };
 
   const blob = await getVercelBlob();
@@ -352,6 +396,79 @@ async function setShare(id, share) {
   return it.share;
 }
 
+async function loadAllMetaRows() {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { list } = blob;
+    const out = await list({ prefix: BLOB_META_PREFIX });
+    const items = [];
+    for (const b of out.blobs ?? []) {
+      try {
+        const res = await fetch(b.url);
+        if (!res.ok) continue;
+        const meta = await res.json();
+        if (meta && typeof meta.id === 'string') items.push(meta);
+      } catch {
+        // ignore
+      }
+    }
+    return items;
+  }
+  const { items } = await readIndex();
+  return items;
+}
+
+async function listProposalVersions(proposalId) {
+  const items = await loadAllMetaRows();
+  const byId = new Map(items.map((i) => [i.id, i]));
+  const start = byId.get(proposalId);
+  if (!start) return [];
+  const rootId = getRootIdOfItem(start, byId);
+  const chain = items.filter((i) => getRootIdOfItem(i, byId) === rootId);
+  chain.sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+  return chain.map((it) => ({
+    id: it.id,
+    proposalId: it.id,
+    versionName: it.name,
+    createdAt: it.createdAt ?? it.updatedAt ?? 0,
+    createdBy: typeof it.lastEditedBy === 'string' && it.lastEditedBy.trim() ? it.lastEditedBy.trim() : 'Editor'
+  }));
+}
+
+async function deleteDerivedPdfs(rootId) {
+  const blob = await getVercelBlob();
+  const items = await loadAllMetaRows();
+  const byId = new Map(items.map((i) => [i.id, i]));
+  const toDelete = [];
+  for (const it of items) {
+    if (it.id === rootId) continue;
+    if (getRootIdOfItem(it, byId) === rootId) toDelete.push(it.id);
+  }
+
+  if (blob) {
+    const { del } = blob;
+    for (const delId of toDelete) {
+      await Promise.allSettled([del(`${BLOB_PREFIX}${delId}.pdf`), del(`${BLOB_META_PREFIX}${delId}.json`)]);
+    }
+    return toDelete;
+  }
+
+  const index = await readIndex();
+  const nextItems = index.items.filter((it) => !toDelete.includes(it.id));
+  if (nextItems.length !== index.items.length) {
+    index.items = nextItems;
+    await writeIndex(index);
+  }
+  for (const delId of toDelete) {
+    try {
+      await fs.unlink(pdfPath(delId));
+    } catch {
+      // ignore
+    }
+  }
+  return toDelete;
+}
+
 module.exports = {
   listPdfs,
   getMeta,
@@ -364,6 +481,8 @@ module.exports = {
   getRejection,
   setRejection,
   getShare,
-  setShare
+  setShare,
+  listProposalVersions,
+  deleteDerivedPdfs
 };
 

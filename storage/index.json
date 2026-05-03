@@ -1,11 +1,92 @@
 {
   "items": [
     {
-      "id": "d4371c2d-4a39-4b56-be3e-bc45fb565436",
-      "name": "Proposal for Retail building_2711-3.pdf",
-      "size": 203491,
-      "createdAt": 1777611677127,
-      "updatedAt": 1777611733195,
+      "id": "40a6baab-c684-401e-bb1e-4ed8d5f2ac89",
+      "name": "Proposal for Retail building_2711.pdf",
+      "size": 3200698,
+      "createdAt": 1777744403921,
+      "updatedAt": 1777751449232,
+      "rootId": "40a6baab-c684-401e-bb1e-4ed8d5f2ac89",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "6b1c0e38-53fb-4577-8415-81a810fe5224",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 3200698,
+      "createdAt": 1777751449899,
+      "updatedAt": 1777751965095,
+      "rootId": "40a6baab-c684-401e-bb1e-4ed8d5f2ac89",
+      "parentId": "40a6baab-c684-401e-bb1e-4ed8d5f2ac89",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "50432e1a-ce97-48f7-8f03-759954616b20",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 3200698,
+      "createdAt": 1777751973172,
+      "updatedAt": 1777752738816,
+      "rootId": "40a6baab-c684-401e-bb1e-4ed8d5f2ac89",
+      "parentId": "6b1c0e38-53fb-4577-8415-81a810fe5224",
       "pageFurniture": {
         "proposalTitle": "",
         "clientName": "",

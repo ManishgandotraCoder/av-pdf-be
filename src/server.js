@@ -170,8 +170,17 @@ app.post('/api/proposals/save-as-new', upload.single('file'), async (req, res) =
     const timestamp = Date.now();
     const baseName = String(req.body?.name ?? file.originalname ?? 'proposal.pdf').trim() || 'proposal.pdf';
     const meta = usingMongo
-      ? await store.putNew({ id: crypto.randomUUID(), name: baseName, bytes: file.buffer })
-      : await store.putNew({ name: baseName, bytes: file.buffer });
+      ? await store.putNew({
+          id: crypto.randomUUID(),
+          name: baseName,
+          bytes: file.buffer,
+          parentProposalId: sourceProposalId || undefined
+        })
+      : await store.putNew({
+          name: baseName,
+          bytes: file.buffer,
+          parentProposalId: sourceProposalId || undefined
+        });
     return res.json({
       ...meta,
       versionId: `${meta.id}:${timestamp}`,
@@ -388,9 +397,29 @@ app.post('/api/share/add-user', async (req, res) => {
   }
 });
 
-app.get('/api/proposals/:id/versions', async (_req, res) => {
-  // Local editor backend does not persist version history yet.
-  res.json([]);
+app.get('/api/proposals/:id/versions', async (req, res) => {
+  try {
+    const id = String(req.params.id ?? '').trim();
+    if (!id) return res.status(400).json({ error: 'Missing id.' });
+    const versions = await store.listProposalVersions(id);
+    res.json(versions);
+  } catch (e) {
+    res.status(500).json({ error: e instanceof Error ? e.message : 'Failed to load versions.' });
+  }
+});
+
+app.post('/api/proposals/:id/clear-versions', async (req, res) => {
+  try {
+    const id = String(req.params.id ?? '').trim();
+    if (!id) return res.status(400).json({ error: 'Missing id.' });
+    const meta = await store.getMeta(id);
+    if (!meta) return res.status(404).json({ error: 'Not found.' });
+    const rootId = meta.rootId || meta.id;
+    const deletedIds = await store.deleteDerivedPdfs(rootId);
+    res.json({ ok: true, rootId, deletedIds });
+  } catch (e) {
+    res.status(500).json({ error: e instanceof Error ? e.message : 'Failed to clear versions.' });
+  }
 });
 
 /**
