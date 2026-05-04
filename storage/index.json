@@ -1,45 +1,6 @@
 {
   "items": [
     {
-      "id": "40a6baab-c684-401e-bb1e-4ed8d5f2ac89",
-      "name": "Proposal for Retail building_2711.pdf",
-      "size": 3200698,
-      "createdAt": 1777744403921,
-      "updatedAt": 1777751449232,
-      "rootId": "40a6baab-c684-401e-bb1e-4ed8d5f2ac89",
-      "pageFurniture": {
-        "proposalTitle": "",
-        "clientName": "",
-        "header": {
-          "content": "{{proposalTitle}}",
-          "alignment": "left",
-          "visible": false
-        },
-        "footer": {
-          "leftContent": "",
-          "centerContent": "",
-          "rightContent": "",
-          "visible": false,
-          "divider": false
-        },
-        "pageNumber": {
-          "visible": true,
-          "format": "1 / N",
-          "position": "footer-right",
-          "startFrom": 1
-        },
-        "logo": {
-          "url": "",
-          "position": "header-left",
-          "width": 96,
-          "height": 32,
-          "keepAspectRatio": true,
-          "linkUrl": "",
-          "visible": false
-        }
-      }
-    },
-    {
       "id": "6b1c0e38-53fb-4577-8415-81a810fe5224",
       "name": "Proposal for Retail building_2711 (v2).pdf",
       "size": 3200698,
@@ -87,6 +48,525 @@
       "updatedAt": 1777752738816,
       "rootId": "40a6baab-c684-401e-bb1e-4ed8d5f2ac89",
       "parentId": "6b1c0e38-53fb-4577-8415-81a810fe5224",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "09a6dc9d-baa3-4486-8f34-fdaf43a4eca0",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 23687968,
+      "createdAt": 1777891979931,
+      "updatedAt": 1777895897986,
+      "rootId": "aded69fe-9a7d-4167-b4a7-a834e4e4848f",
+      "parentId": "aded69fe-9a7d-4167-b4a7-a834e4e4848f",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "0b57a901-111f-43fb-9cb1-511264699792",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 22186491,
+      "createdAt": 1777896210494,
+      "updatedAt": 1777896846669,
+      "rootId": "9e380f33-8d41-446c-b94e-a875445038cc",
+      "parentId": "9e380f33-8d41-446c-b94e-a875445038cc",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "3be45e06-ba9b-47e8-ad96-211272e9b19d",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 20940684,
+      "createdAt": 1777897077108,
+      "updatedAt": 1777897378432,
+      "rootId": "822d2981-9945-48f2-aaae-de7a83edf6bb",
+      "parentId": "822d2981-9945-48f2-aaae-de7a83edf6bb",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "5608f0ac-7b20-4dda-8c5d-af4e24ffd80d",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 22192055,
+      "createdAt": 1777904360362,
+      "updatedAt": 1777905181678,
+      "rootId": "db33450d-52e8-4f98-b622-d766e2d73f0a",
+      "parentId": "db33450d-52e8-4f98-b622-d766e2d73f0a",
+      "pageFurniture": {
+        "proposalTitle": "Proposal for Retail (v2)",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "bc08b8bc-20a1-4b6f-8c7b-c33243b913b4",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 21965426,
+      "createdAt": 1777904415375,
+      "updatedAt": 1777904942816,
+      "rootId": "db33450d-52e8-4f98-b622-d766e2d73f0a",
+      "parentId": "db33450d-52e8-4f98-b622-d766e2d73f0a",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "755943ee-d10b-4426-ade6-09657e139579",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 22251203,
+      "createdAt": 1777905001127,
+      "updatedAt": 1777912490700,
+      "rootId": "db33450d-52e8-4f98-b622-d766e2d73f0a",
+      "parentId": "db33450d-52e8-4f98-b622-d766e2d73f0a",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "452600fc-03a2-4b1b-9870-4320108802e3",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 21335501,
+      "createdAt": 1777907339238,
+      "updatedAt": 1777909728603,
+      "rootId": "5aa2a3ef-6c4d-4d74-9ec0-745d4b2603f0",
+      "parentId": "5aa2a3ef-6c4d-4d74-9ec0-745d4b2603f0",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "b8652b25-e290-4b81-98ea-3aad8477d765",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 22193838,
+      "createdAt": 1777912229940,
+      "updatedAt": 1777912538690,
+      "rootId": "063b9b12-4f37-4060-aeb8-1fdedba3e70b",
+      "parentId": "063b9b12-4f37-4060-aeb8-1fdedba3e70b",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "c946feb3-fe4f-4738-a1af-6bca7cef5b56",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 22100470,
+      "createdAt": 1777912595639,
+      "updatedAt": 1777912975462,
+      "rootId": "8b022a69-7161-461c-8c10-b594c64919cc",
+      "parentId": "8b022a69-7161-461c-8c10-b594c64919cc",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "09b640f4-7f9b-4e77-83c9-0c591612b837",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 22039646,
+      "createdAt": 1777912758635,
+      "updatedAt": 1777916445247,
+      "rootId": "76407ac5-2449-41bf-b9eb-5bea1fb73311",
+      "parentId": "76407ac5-2449-41bf-b9eb-5bea1fb73311",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "4841b80e-2bff-477d-82bb-155b514bd513",
+      "name": "Proposal for Retail building_2711 (v2).pdf",
+      "size": 22036728,
+      "createdAt": 1777913022573,
+      "updatedAt": 1777913024624,
+      "rootId": "784a1bf8-120d-4e55-b5a7-3c9ced62bee9",
+      "parentId": "784a1bf8-120d-4e55-b5a7-3c9ced62bee9",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "291679dc-6d98-4e1f-a388-de1f62a3104b",
+      "name": "Proposal for Retail building_2711 (v3).pdf",
+      "size": 22040988,
+      "createdAt": 1777913032144,
+      "updatedAt": 1777913034859,
+      "rootId": "784a1bf8-120d-4e55-b5a7-3c9ced62bee9",
+      "parentId": "4841b80e-2bff-477d-82bb-155b514bd513",
+      "pageFurniture": {
+        "proposalTitle": "",
+        "clientName": "",
+        "header": {
+          "content": "{{proposalTitle}}",
+          "alignment": "left",
+          "visible": false
+        },
+        "footer": {
+          "leftContent": "",
+          "centerContent": "",
+          "rightContent": "",
+          "visible": false,
+          "divider": false
+        },
+        "pageNumber": {
+          "visible": true,
+          "format": "1 / N",
+          "position": "footer-right",
+          "startFrom": 1
+        },
+        "logo": {
+          "url": "",
+          "position": "header-left",
+          "width": 96,
+          "height": 32,
+          "keepAspectRatio": true,
+          "linkUrl": "",
+          "visible": false
+        }
+      }
+    },
+    {
+      "id": "fcd4e717-0cac-4ab0-a2a6-2b7ba8e89365",
+      "name": "Proposal for Retail building_2711.pdf",
+      "size": 3007412,
+      "createdAt": 1777915056972,
+      "updatedAt": 1777916996665,
+      "rootId": "fcd4e717-0cac-4ab0-a2a6-2b7ba8e89365",
       "pageFurniture": {
         "proposalTitle": "",
         "clientName": "",

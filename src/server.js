@@ -31,6 +31,13 @@ function isLikelyPdfUpload(file) {
   return false;
 }
 
+/** Strip large editor payload from PDF metadata responses (use GET /editor-state instead). */
+function metaForClient(meta) {
+  if (!meta || typeof meta !== 'object') return meta;
+  const { editorState: _omit, ...rest } = meta;
+  return rest;
+}
+
 // For PUT of raw PDF bytes.
 app.use(
   '/api/pdfs/:id',
@@ -78,7 +85,7 @@ app.get('/api/pdfs/:id/meta', async (req, res) => {
   try {
     const meta = await store.getMeta(req.params.id);
     if (!meta) return res.status(404).json({ error: 'Not found.' });
-    res.json(meta);
+    res.json(metaForClient(meta));
   } catch (e) {
     res.status(500).json({ error: e instanceof Error ? e.message : 'Failed to load meta.' });
   }
@@ -154,6 +161,34 @@ app.put('/api/pdfs/:id/furniture', async (req, res) => {
     return res.json({ ok: true });
   } catch (e) {
     return res.status(400).json({ error: e instanceof Error ? e.message : 'Failed to save page furniture.' });
+  }
+});
+
+const editorStateJson = express.json({ limit: '50mb' });
+
+app.get('/api/pdfs/:id/editor-state', async (req, res) => {
+  try {
+    const meta = await store.getMeta(req.params.id);
+    if (!meta) return res.status(404).json({ error: 'Not found.' });
+    const editorState = await store.getEditorState(req.params.id);
+    return res.json({ editorState: editorState ?? null });
+  } catch (e) {
+    return res.status(500).json({ error: e instanceof Error ? e.message : 'Failed to load editor state.' });
+  }
+});
+
+app.put('/api/pdfs/:id/editor-state', editorStateJson, async (req, res) => {
+  try {
+    const meta = await store.getMeta(req.params.id);
+    if (!meta) return res.status(404).json({ error: 'Not found.' });
+    const body = req.body ?? {};
+    const hasObjectBody = body && typeof body === 'object';
+    if (!hasObjectBody) return res.status(400).json({ error: 'Invalid editor state payload.' });
+    const editorState = Object.prototype.hasOwnProperty.call(body, 'editorState') ? body.editorState : null;
+    await store.setEditorState(req.params.id, editorState);
+    return res.json({ ok: true });
+  } catch (e) {
+    return res.status(400).json({ error: e instanceof Error ? e.message : 'Failed to save editor state.' });
   }
 });
 

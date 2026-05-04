@@ -27,6 +27,7 @@ const STORAGE_DIR = (() => {
   return path.join(__dirname, '..', 'storage');
 })();
 const PDF_DIR = path.join(STORAGE_DIR, 'pdfs');
+const EDITOR_STATE_DIR = path.join(STORAGE_DIR, 'editor-states');
 const INDEX_PATH = path.join(STORAGE_DIR, 'index.json');
 
 const BLOB_PREFIX = 'pdfs/';
@@ -34,6 +35,14 @@ const BLOB_META_PREFIX = 'meta/';
 
 async function ensureDirs() {
   await fs.mkdir(PDF_DIR, { recursive: true });
+}
+
+async function ensureEditorStateDir() {
+  await fs.mkdir(EDITOR_STATE_DIR, { recursive: true });
+}
+
+function editorStatePath(id) {
+  return path.join(EDITOR_STATE_DIR, `${id}.json`);
 }
 
 async function readIndex() {
@@ -155,6 +164,65 @@ async function getMeta(id) {
   return items.find((it) => it.id === id) ?? null;
 }
 
+async function getEditorState(id) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const meta = await getMeta(id);
+    return meta?.editorState ?? null;
+  }
+
+  try {
+    const raw = await fs.readFile(editorStatePath(id), 'utf8');
+    return JSON.parse(raw);
+  } catch (e) {
+    if (e && typeof e === 'object' && e.code === 'ENOENT') return null;
+    throw e;
+  }
+}
+
+async function setEditorState(id, editorState) {
+  const blob = await getVercelBlob();
+  if (blob) {
+    const { put, head } = blob;
+    let meta;
+    try {
+      const h = await head(`${BLOB_META_PREFIX}${id}.json`);
+      const res = await fetch(h.url);
+      if (!res.ok) return null;
+      meta = await res.json();
+    } catch {
+      return null;
+    }
+    if (!meta) return null;
+    meta.editorState = editorState ?? null;
+    meta.updatedAt = Date.now();
+    await put(`${BLOB_META_PREFIX}${id}.json`, JSON.stringify(meta), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false
+    });
+    return editorState ?? null;
+  }
+
+  const index = await readIndex();
+  const it = index.items.find((x) => x.id === id);
+  if (!it) return null;
+  it.updatedAt = Date.now();
+  await writeIndex(index);
+
+  if (editorState == null) {
+    try {
+      await fs.unlink(editorStatePath(id));
+    } catch {
+      // ignore
+    }
+    return null;
+  }
+  await ensureEditorStateDir();
+  await fs.writeFile(editorStatePath(id), JSON.stringify(editorState), 'utf8');
+  return editorState;
+}
+
 async function getBytes(id) {
   const blob = await getVercelBlob();
   if (blob) {
@@ -273,6 +341,11 @@ async function deletePdf(id) {
   await writeIndex(index);
   try {
     await fs.unlink(pdfPath(id));
+  } catch {
+    // ignore
+  }
+  try {
+    await fs.unlink(editorStatePath(id));
   } catch {
     // ignore
   }
@@ -465,6 +538,11 @@ async function deleteDerivedPdfs(rootId) {
     } catch {
       // ignore
     }
+    try {
+      await fs.unlink(editorStatePath(delId));
+    } catch {
+      // ignore
+    }
   }
   return toDelete;
 }
@@ -478,6 +556,8 @@ module.exports = {
   deletePdf,
   getFurniture,
   setFurniture,
+  getEditorState,
+  setEditorState,
   getRejection,
   setRejection,
   getShare,

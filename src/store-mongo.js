@@ -52,7 +52,7 @@ async function resolveRootIdFromSourceMongo(col, sourceId) {
 async function listPdfs() {
   const col = await metaCollection();
   const items = await col
-    .find({}, { projection: { _id: 0, fileId: 0, share: 0 } })
+    .find({}, { projection: { _id: 0, fileId: 0, share: 0, editorState: 0 } })
     .sort({ updatedAt: -1 })
     .toArray();
   return items;
@@ -212,6 +212,28 @@ async function setFurniture(id, pageFurniture) {
   return pageFurniture ?? null;
 }
 
+async function getEditorState(id) {
+  const col = await metaCollection();
+  const doc = await col.findOne({ id }, { projection: { _id: 0, editorState: 1 } });
+  return doc?.editorState ?? null;
+}
+
+async function setEditorState(id, editorState) {
+  const col = await metaCollection();
+  const existing = await col.findOne({ id }, { projection: { _id: 1 } });
+  if (!existing) return null;
+  await col.updateOne(
+    { id },
+    {
+      $set: {
+        editorState: editorState ?? null,
+        updatedAt: Date.now()
+      }
+    }
+  );
+  return editorState ?? null;
+}
+
 async function getRejection(id) {
   const col = await metaCollection();
   const doc = await col.findOne({ id }, { projection: { _id: 0, rejection: 1 } });
@@ -302,6 +324,8 @@ module.exports = {
   deletePdf,
   getFurniture,
   setFurniture,
+  getEditorState,
+  setEditorState,
   getRejection,
   setRejection,
   getShare,
