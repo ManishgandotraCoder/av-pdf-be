@@ -7,11 +7,20 @@ const { getMongoUri } = require('./mongo');
 const usingMongo = Boolean(getMongoUri());
 const store = usingMongo ? require('./store-mongo') : require('./store');
 
+const DEFAULT_JSON_LIMIT = '100mb';
+const DEFAULT_EDITOR_STATE_LIMIT = '150mb';
+const DEFAULT_PDF_UPLOAD_MAX_MB = 200;
+const uploadMaxMb = Number(process.env.PDF_UPLOAD_MAX_MB ?? DEFAULT_PDF_UPLOAD_MAX_MB);
+const uploadMaxBytes = Number.isFinite(uploadMaxMb) && uploadMaxMb > 0 ? Math.floor(uploadMaxMb * 1024 * 1024) : 200 * 1024 * 1024;
+
 const app = express();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: uploadMaxBytes }
+});
 
 app.use(cors());
-app.use(express.json({ limit: '2mb' }));
+app.use(express.json({ limit: process.env.API_JSON_LIMIT ?? DEFAULT_JSON_LIMIT }));
 
 app.get('/', (_req, res) =>
   res.json({
@@ -164,7 +173,9 @@ app.put('/api/pdfs/:id/furniture', async (req, res) => {
   }
 });
 
-const editorStateJson = express.json({ limit: '50mb' });
+const editorStateJson = express.json({
+  limit: process.env.EDITOR_STATE_JSON_LIMIT ?? DEFAULT_EDITOR_STATE_LIMIT
+});
 
 app.get('/api/pdfs/:id/editor-state', async (req, res) => {
   try {
@@ -602,6 +613,18 @@ app.get('/api/crm/asset-library', async (_req, res) => {
       error: e instanceof Error ? e.message : 'CRM asset library request failed.'
     });
   }
+});
+
+app.use((err, _req, res, next) => {
+  if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({
+      error: `File is too large. Max upload size is ${Math.floor(uploadMaxBytes / (1024 * 1024))}MB.`
+    });
+  }
+  if (err?.type === 'entity.too.large') {
+    return res.status(413).json({ error: 'Request payload too large.' });
+  }
+  return next(err);
 });
 
 module.exports = app;
